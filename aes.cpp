@@ -64,11 +64,26 @@ int main(){
 
     unsigned char p[16],k[16],rk[176],s[4][4];
 
-    cout<<"Plaintext (16 chars): ";
-    cin.read((char*)p,16);
+    unsigned char p[16],k[16],rk[176],s[4][4];
 
-    cout<<"Key (16 chars): ";
-    cin.read((char*)k,16);
+    string pt, key;
+
+    cout<<"Enter plaintext (16 chars): ";
+    // hello1234567890a (must be 16 chars)
+    getline(cin, pt);
+
+    cout<<"Enter key (16 chars): ";
+    // key1234567890123 (must be 16 chars)
+    getline(cin, key);
+
+    // ensure length = 16
+    while(pt.size() < 16) pt += ' ';
+    while(key.size() < 16) key += ' ';
+
+    for(int i=0;i<16;i++){
+        p[i] = pt[i];
+        k[i] = key[i];
+    }
 
     keyexp(k,rk);
 

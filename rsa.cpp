@@ -33,6 +33,7 @@ long long modInverse(long long e, long long phi){
 int main(){
     long long p, q;
     cout << "Enter prime numbers p and q: ";
+    // 23 5
     cin >> p >> q;
 
     long long n = p * q;
@@ -50,6 +51,7 @@ int main(){
 
     long long message;
     cout << "Enter message (number): ";
+    // 56
     cin >> message;
 
     long long cipher = power(message, e, n);

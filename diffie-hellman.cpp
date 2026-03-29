@@ -15,17 +15,21 @@ long long modExp(long long b,long long e,long long m){
 int main(){
     long long p,g;
     cout<<"Enter prime p: ";
+    // 23
     cin>>p;
 
     cout<<"Enter generator g: ";
+    // 5
     cin>>g;
 
     // private keys
     long long a,b;
     cout<<"Enter private key of A: ";
+    // 6
     cin>>a;
 
     cout<<"Enter private key of B: ";
+    // 15
     cin>>b;
 
     // public keys

@@ -45,9 +45,11 @@ int main(){
     string pt, keyStr;
 
     cout << "Enter plaintext string: ";
+    // ayushacharya
     getline(cin, pt);
 
     cout << "Enter 10-bit key (binary): ";
+    // 1010101101
     getline(cin, keyStr);
 
     // Key parsing

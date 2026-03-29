@@ -118,8 +118,10 @@ uint64_t to64(string s){
 int main(){
     string pt,key;
     cout<<"Enter plaintext: ";
+    // hello123 (8 Character Words)
     getline(cin,pt);
     cout<<"Enter key: ";
+    // password (Length should be 8 only)
     getline(cin,key);
 
     uint64_t P=to64(pt), K=to64(key);

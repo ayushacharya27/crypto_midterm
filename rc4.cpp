@@ -4,9 +4,11 @@ using namespace std;
 int main() {
     string key, plaintext;
     cout << "Enter key: ";
+    // key123
     getline(cin, key);
 
     cout << "Enter plaintext: ";
+    // hello
     getline(cin, plaintext);
 
     int S[256], K[256];
@@ -23,7 +25,7 @@ int main() {
         swap(S[i], S[j]);
     }
 
-    // -------- Phase 2: Key Stream Generation --------
+    // Key Stream Generation 
     int i = 0;
     j = 0;
 
@@ -41,7 +43,7 @@ int main() {
         keystream.push_back(k);
     }
 
-    // -------- Phase 3: Encryption (XOR) --------
+    // Encryption (XOR) 
     string cipher = plaintext;
 
     cout << "\nKeystream: ";
@@ -53,7 +55,7 @@ int main() {
         printf("%02X ", (unsigned char)cipher[n]);
     }
 
-    // -------- Decryption (same XOR) --------
+    // Decryption 
     string decrypted = cipher;
     for (int n = 0; n < cipher.length(); n++) {
         decrypted[n] = cipher[n] ^ keystream[n];
