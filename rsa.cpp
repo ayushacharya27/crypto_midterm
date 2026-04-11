@@ -40,10 +40,14 @@ int main(){
     long long phi = (p - 1) * (q - 1);
 
     long long e;
+    /* If e is given
+    cout << "Enter public exponent e: ";
+    cin >> e;
+    */
     for(e = 2; e < phi; e++)
         if(gcd(e, phi) == 1)
             break;
-
+    
     long long d = modInverse(e, phi);
 
     cout << "Public Key (e, n): (" << e << ", " << n << ")\n";

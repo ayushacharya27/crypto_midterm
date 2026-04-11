@@ -33,12 +33,12 @@ static const uint64_t K[80]={
 0x4cc5d4becb3e42b6ULL,0x597f299cfc657e2aULL,0x5fcb6fab3ad6faecULL,0x6c44198c4a475817ULL
 };
 
-void sha512(string msg){
-    vector<uint8_t> d(msg.begin(),msg.end());
+void sha512(vector<uint8_t> d){
+    uint64_t bits=d.size()*8;
+
     d.push_back(0x80);
     while((d.size()%128)!=112) d.push_back(0);
 
-    uint64_t bits=msg.size()*8;
     for(int i=0;i<8;i++) d.push_back(0);
     for(int i=0;i<8;i++) d.push_back((bits>>(56-8*i))&0xFF);
 
@@ -49,7 +49,8 @@ void sha512(string msg){
     0x1f83d9abfb41bd6bULL,0x5be0cd19137e2179ULL};
 
     for(int i=0;i<d.size();i+=128){
-        uint64_t w[80];
+        uint64_t w[80]={0};
+
         for(int j=0;j<16;j++)
             for(int k=0;k<8;k++)
                 w[j]=(w[j]<<8)|d[i+j*8+k];
@@ -80,8 +81,13 @@ void sha512(string msg){
 int main(){
     string msg;
     cout<<"Enter message: ";
-    // ayushacharya23bps1078
-    
     getline(cin,msg);
-    sha512(msg);
+
+    // If String
+    // vector<uint8_t> data(msg.begin(),msg.end());
+    // sha512(data);
+    
+    // If Binary 
+    vector<uint8_t> data=binaryToBytes(msg);
+    sha512(data);
 }

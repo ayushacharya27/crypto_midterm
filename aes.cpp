@@ -64,8 +64,6 @@ int main(){
 
     unsigned char p[16],k[16],rk[176],s[4][4];
 
-    unsigned char p[16],k[16],rk[176],s[4][4];
-
     string pt, key;
 
     cout<<"Enter plaintext (16 chars): ";

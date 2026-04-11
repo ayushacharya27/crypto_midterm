@@ -1,3 +1,21 @@
+//-----------------------------------------String to Binary START--------------------------------//
+vector<uint8_t> binaryToBytes(string bin){
+    vector<uint8_t> bytes;
+    while(bin.length()%8!=0) bin="0"+bin;
+
+    for(int i=0;i<bin.length();i+=8){
+        string part=bin.substr(i,8);
+        bytes.push_back(bitset<8>(part).to_ulong());
+    }
+    return bytes;
+}
+//-----------------------------------------String to Binary END--------------------------------//
+
+//-----------------------IMP POINT IN RSA BASED QUESTIONS-----------------------------------------//
+/* If e is given. remove that For Loop
+    cout << "Enter public exponent e: ";
+    cin >> e;
+*/
 ////--------CIPHER START--------------CIPHER START------------CIPHER START------------------CIPHER START---------////
 //--------------Caesar Cipher START---------------------------------------Caesar Cipher START-------------------------//
 #include <bits/stdc++.h>
@@ -184,6 +202,92 @@ int main(){
 }
 //--------------Playfair Cipher END---------------------------------------Playfair Cipher END----------------------//
 
+//--------------Hill Cipher START---------------------------------------Hill Cipher START-------------------------//
+#include <bits/stdc++.h>
+using namespace std;
+
+int mod26(int x){
+    x %= 26;
+    if(x < 0) x += 26;
+    return x;
+}
+
+int modInverse(int a){
+    a = mod26(a);
+    for(int i=1;i<26;i++)
+        if((a*i)%26==1) return i;
+    return -1;
+}
+
+int main(){
+    string text;
+    int key[2][2];
+
+    cout<<"Enter plaintext: ";
+    // help
+    getline(cin,text);
+
+    cout<<"Enter 2x2 key matrix:\n";
+    // 3 3 2 5
+    for(int i=0;i<2;i++)
+        for(int j=0;j<2;j++)
+            cin>>key[i][j];
+
+    // Prepare plaintext
+    string p="";
+    for(char c:text){
+        if(isalpha(c))
+            p += tolower(c);
+    }
+    if(p.size()%2) p+='x';
+
+    // Encrypt
+    string enc="";
+    for(int i=0;i<p.size();i+=2){
+        int a=p[i]-'a';
+        int b=p[i+1]-'a';
+
+        int c1 = mod26(key[0][0]*a + key[0][1]*b);
+        int c2 = mod26(key[1][0]*a + key[1][1]*b);
+
+        enc += char(c1+'a');
+        enc += char(c2+'a');
+    }
+
+    cout<<"Encrypted: "<<enc<<endl;
+
+    // Inverse key matrix
+    int det = mod26(key[0][0]*key[1][1] - key[0][1]*key[1][0]);
+    int invDet = modInverse(det);
+
+    if(invDet==-1){
+        cout<<"Key matrix not invertible!"<<endl;
+        return 0;
+    }
+
+    int inv[2][2];
+    inv[0][0] = mod26( key[1][1]*invDet);
+    inv[0][1] = mod26(-key[0][1]*invDet);
+    inv[1][0] = mod26(-key[1][0]*invDet);
+    inv[1][1] = mod26( key[0][0]*invDet);
+
+    // Decrypt
+    string dec="";
+    for(int i=0;i<enc.size();i+=2){
+        int a=enc[i]-'a';
+        int b=enc[i+1]-'a';
+
+        int p1 = mod26(inv[0][0]*a + inv[0][1]*b);
+        int p2 = mod26(inv[1][0]*a + inv[1][1]*b);
+
+        dec += char(p1+'a');
+        dec += char(p2+'a');
+    }
+
+    cout<<"Decrypted: "<<dec<<endl;
+}
+//--------------Hill Cipher END---------------------------------------Hill Cipher END-------------------------//
+
 ////--------CIPHER END------------------CIPHER END------------------CIPHER END------------------CIPHER END----------////
 
 
@@ -254,8 +358,6 @@ void keyexp(unsigned char k[16],unsigned char w[176]){
 int main(){
 
     unsigned char p[16],k[16],rk[176],s[4][4];
-
-  
 
     string pt, key;
 
@@ -486,7 +588,9 @@ int EP[]={4,1,2,3,2,3,4,1}, P4[]={2,4,3,1};
 int S0[4][4]={{1,0,3,2},{3,2,1,0},{0,2,1,3},{3,1,3,2}};
 int S1[4][4]={{0,1,2,3},{2,0,1,3},{3,0,1,0},{2,1,0,3}};
 
-int shift(int x,int s){ return ((x<<s)|(x>>(5-s)))&31; }
+int shift(int x,int s){
+    return ((x<<s)|(x>>(5-s)))&31;
+}
 
 int fk(int r,int k){
     int t=P(r,4,8,EP)^k;
@@ -495,7 +599,8 @@ int fk(int r,int k){
     int row=((L&8)>>2)|(L&1), col=(L>>1)&3;
     int a=S0[row][col];
 
-    row=((R&8)>>2)|(R&1); col=(R>>1)&3;
+    row=((R&8)>>2)|(R&1);
+    col=(R>>1)&3;
     int b=S1[row][col];
 
     return P((a<<2)|b,4,4,P4);
@@ -503,6 +608,7 @@ int fk(int r,int k){
 
 int sdes(int m,int k1,int k2){
     m=P(m,8,8,IP);
+
     int L=m>>4,R=m&15;
 
     L^=fk(R,k1);
@@ -513,38 +619,67 @@ int sdes(int m,int k1,int k2){
 }
 
 int main(){
-    string pt, keyStr;
+    int choice;
+    string keyStr;
 
-    cout << "Enter plaintext string: ";
+    vector<int> plaintextBytes;
+    /*string pt;
+    cout<<"Enter plaintext string: ";
     // ayushacharya
-    getline(cin, pt);
+    getline(cin,pt);
 
-    cout << "Enter 10-bit key (binary): ";
+    for(char c:pt)
+        plaintextBytes.push_back((unsigned char)c);
+    */
+
+    /*
+    string bin;
+    cout<<"Enter binary plaintext: "; // Multiple of 8 Bits
+    // 10101011
+    getline(cin,bin);
+
+    plaintextBytes=binaryToBytes(bin);
+    */
+    
+
+    cout<<"Enter 10-bit key (binary): ";
     // 1010101101
-    getline(cin, keyStr);
+    getline(cin,keyStr);
 
-    // Key parsing
+    // Parse key
     int k=0,c=0;
-    for(char x:keyStr)
-        if(x=='0'||x=='1'){ k=(k<<1)|(x-'0'); if(++c==10) break; }
+    for(char x:keyStr){
+        if(x=='0'||x=='1'){
+            k=(k<<1)|(x-'0');
+            if(++c==10) break;
+        }
+    }
     k<<=(10-c);
 
-    // Subkeys
+    // Generate subkeys
     int k1=P((shift(k>>5,1)<<5)|shift(k&31,1),10,8,P8);
     int k2=P((shift(k>>5,3)<<5)|shift(k&31,3),10,8,P8);
 
-    // -------- ENCRYPT --------
-    string ct=pt;
-    for(char &x:ct) x=sdes((unsigned char)x,k1,k2);
+    // Encrypt
+    vector<int> cipher=plaintextBytes;
+    for(int &x:cipher)
+        x=sdes(x,k1,k2);
 
-    cout<<"Encrypted: ";
-    for(char x:ct) printf("%02X ",(unsigned char)x);
+    cout<<"Encrypted (hex): ";
+    for(int x:cipher)
+        printf("%02X ",x);
 
-    // -------- DECRYPT --------
-    string dt=ct;
-    for(char &x:dt) x=sdes((unsigned char)x,k2,k1);
+    // Decrypt
+    vector<int> decrypted=cipher;
+    for(int &x:decrypted)
+        x=sdes(x,k2,k1);
 
-    cout<<"\nDecrypted: "<<dt;
+    cout<<"\nDecrypted: ";
+    for(int x:decrypted)
+        cout<<(char)x;
+
+    cout<<endl;
+    return 0;
 }
 //----------------SDES END---------------SDES END----------------------SDES END-------------------SDES END----------//
 
@@ -846,18 +981,41 @@ int main(){
 using namespace std;
 
 int main() {
-    string key, plaintext;
+    string key;
+    int choice;
+
     cout << "Enter key: ";
     // key123
     getline(cin, key);
 
-    cout << "Enter plaintext: ";
-    // hello
-    getline(cin, plaintext);
+    cout << "Enter choice: ";
+    cin >> choice;
+    cin.ignore();
+
+    vector<int> plaintextBytes;
+
+    if (choice == 1) {
+        string plaintext;
+        cout << "Enter plaintext: ";
+        // hello
+        getline(cin, plaintext);
+
+        for (char c : plaintext)
+            plaintextBytes.push_back((unsigned char)c);
+    }
+    else if (choice == 2) {
+        string binaryInput;
+        cout << "Enter binary plaintext: "; // Multiple of 8
+        // 10001000 -> * bits
+        getline(cin, binaryInput);
+
+        plaintextBytes = binaryToBytes(binaryInput);
+    }
+
 
     int S[256], K[256];
 
-    // Key Scheduling 
+    // Key Scheduling Algorithm (KSA)
     for (int i = 0; i < 256; i++) {
         S[i] = i;
         K[i] = key[i % key.length()];
@@ -869,44 +1027,46 @@ int main() {
         swap(S[i], S[j]);
     }
 
-    // Key Stream Generation 
+    // Pseudo Random Generation Algorithm (PRGA)
     int i = 0;
     j = 0;
-
     vector<int> keystream;
 
-    for (int n = 0; n < plaintext.length(); n++) {
+    for (int n = 0; n < plaintextBytes.size(); n++) {
         i = (i + 1) % 256;
         j = (j + S[i]) % 256;
 
         swap(S[i], S[j]);
 
         int t = (S[i] + S[j]) % 256;
-        int k = S[t];   // keystream byte
-
+        int k = S[t];
         keystream.push_back(k);
     }
 
-    // Encryption (XOR) 
-    string cipher = plaintext;
+    // Encryption
+    vector<int> cipher(plaintextBytes.size());
 
     cout << "\nKeystream: ";
-    for (int k : keystream) cout << k << " ";
+    for (int k : keystream)
+        cout << k << " ";
 
     cout << "\nEncrypted (hex): ";
-    for (int n = 0; n < plaintext.length(); n++) {
-        cipher[n] = plaintext[n] ^ keystream[n];
-        printf("%02X ", (unsigned char)cipher[n]);
+    for (int n = 0; n < plaintextBytes.size(); n++) {
+        cipher[n] = plaintextBytes[n] ^ keystream[n];
+        printf("%02X ", cipher[n]);
     }
 
-    // Decryption 
-    string decrypted = cipher;
-    for (int n = 0; n < cipher.length(); n++) {
+    // Decryption
+    vector<int> decrypted(cipher.size());
+    for (int n = 0; n < cipher.size(); n++) {
         decrypted[n] = cipher[n] ^ keystream[n];
     }
 
-    cout << "\nDecrypted: " << decrypted << endl;
+    cout << "\nDecrypted: ";
+    for (int x : decrypted)
+        cout << (char)x;
 
+    cout << endl;
     return 0;
 }
 //---------------RC4 END------------------------------RC4 END------------------------------RC4 END---------------//
@@ -1014,12 +1174,12 @@ static const uint64_t K[80]={
 0x4cc5d4becb3e42b6ULL,0x597f299cfc657e2aULL,0x5fcb6fab3ad6faecULL,0x6c44198c4a475817ULL
 };
 
-void sha512(string msg){
-    vector<uint8_t> d(msg.begin(),msg.end());
+void sha512(vector<uint8_t> d){
+    uint64_t bits=d.size()*8;
+
     d.push_back(0x80);
     while((d.size()%128)!=112) d.push_back(0);
 
-    uint64_t bits=msg.size()*8;
     for(int i=0;i<8;i++) d.push_back(0);
     for(int i=0;i<8;i++) d.push_back((bits>>(56-8*i))&0xFF);
 
@@ -1030,7 +1190,8 @@ void sha512(string msg){
     0x1f83d9abfb41bd6bULL,0x5be0cd19137e2179ULL};
 
     for(int i=0;i<d.size();i+=128){
-        uint64_t w[80];
+        uint64_t w[80]={0};
+
         for(int j=0;j<16;j++)
             for(int k=0;k<8;k++)
                 w[j]=(w[j]<<8)|d[i+j*8+k];
@@ -1061,10 +1222,15 @@ void sha512(string msg){
 int main(){
     string msg;
     cout<<"Enter message: ";
-    // ayushacharya23bps1078
-    
     getline(cin,msg);
-    sha512(msg);
+
+    // If String
+    // vector<uint8_t> data(msg.begin(),msg.end());
+    // sha512(data);
+    
+    // If Binary 
+    vector<uint8_t> data=binaryToBytes(msg);
+    sha512(data);
 }
 //---------------SHA END----------------------------SHA END----------------------------------SHA END----------//
 
@@ -1093,8 +1259,8 @@ int S[64]={7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,
 4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,
 6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21};
 
-void md5(string msg){
-    vector<uint8_t> d(msg.begin(),msg.end());
+void md5(vector<uint8_t> d){
+    
     uint64_t bits=d.size()*8;
 
     d.push_back(0x80);
@@ -1139,7 +1305,15 @@ int main(){
     string msg;
     cout<<"Enter message: ";
     getline(cin,msg);
-    md5(msg);
+
+    // If String
+    // vector<uint8_t> data(msg.begin(),msg.end());
+    // md5(data);
+
+    // If Binary 
+    vector<uint8_t> data=binaryToBytes(msg);
+    md5(data);
+    
 }
 //---------------MD5 END-----------------------------MD5 END-------------------------MD5 END------------------//
 

@@ -22,8 +22,8 @@ int S[64]={7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,
 4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,
 6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21};
 
-void md5(string msg){
-    vector<uint8_t> d(msg.begin(),msg.end());
+void md5(vector<uint8_t> d){
+    
     uint64_t bits=d.size()*8;
 
     d.push_back(0x80);
@@ -68,5 +68,13 @@ int main(){
     string msg;
     cout<<"Enter message: ";
     getline(cin,msg);
-    md5(msg);
+
+    // If String
+    // vector<uint8_t> data(msg.begin(),msg.end());
+    // md5(data);
+
+    // If Binary 
+    vector<uint8_t> data=binaryToBytes(msg);
+    md5(data);
+    
 }
